@@ -29,7 +29,9 @@
     "vite": "^6.0.11"
   },
   "devDependencies": {
+    "@rollup/plugin-node-resolve": "^16.0.0",
     "concurrently": "^8.2.1",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "rollup-plugin-postcss": "^4.0.2"
   }
 }
