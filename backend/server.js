@@ -1,3 +1,4 @@
+import path from 'path'
 import express from 'express' //Importing express node framework
 import dotenv from 'dotenv' //Importing dotenv from the installed dependency, which will be used for the ".env" file
 import userRoutes from './routes/userRoutes.js' //Imports the route + the controller that it uses
@@ -23,5 +24,14 @@ app.get('/', (req, res) => res.send('Server is ready!!')) //Setting up the route
 
 app.use(notFound)
 app.use(errorHandler)
+
+if(process.env.NODE_ENV === 'production'){
+  app.use(express.static('frontend/dist'))
+
+  app.get("*", (req, res) =>{
+    res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html'))
+  })
+}
+
 
 app.listen(port, () => console.log(`Server started on port ${port}`)) //Setting up the server - let's you know that connection to server is successful
