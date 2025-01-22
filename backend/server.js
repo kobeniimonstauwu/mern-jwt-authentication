@@ -8,9 +8,19 @@ import cookieParser from 'cookie-parser'
 dotenv.config() //Running the config based from the file changes in ".env"
 const port = process.env.port || 5000 // Server-side port - It will run the port value from the config file
 
-connectDB()
 
+connectDB()
+const __dirname = path.resolve()
 const app = express() //Setting up express
+if(process.env.NODE_ENV === 'production'){
+  app.use(express.static(path.join(__dirname,"/frontend/dist")))
+
+  app.get("*", (req, res) =>{
+      // Other url that isn't above will send the user to the index page
+      res.sendFile(path.join(__dirname, "frontend", "dist", "index.html"))
+  })
+}
+
 
 app.use(express.json()) // Parses raw json (Body Parser)
 app.use(express.urlencoded({ extended: true })) // Allows to send FORM DATA
@@ -20,18 +30,11 @@ app.use(cookieParser())
 app.use('/api/users', userRoutes) //FIRST PARAMETER WRAPS AROUND THE "userRoutes.js" and runs it
 
 //Setting up if SERVER is successful 
-app.get('/', (req, res) => res.send('Server is ready!!')) //Setting up the route for the directory (parameters for the URL)
+// app.get('/', (req, res) => res.send('Server is ready!!')) //Setting up the route for the directory (parameters for the URL)
 
 app.use(notFound)
 app.use(errorHandler)
 
-if(process.env.NODE_ENV === 'production'){
-  app.use(express.static('frontend/dist'))
-
-  app.get("*", (req, res) =>{
-    res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html'))
-  })
-}
 
 
 app.listen(port, () => console.log(`Server started on port ${port}`)) //Setting up the server - let's you know that connection to server is successful
